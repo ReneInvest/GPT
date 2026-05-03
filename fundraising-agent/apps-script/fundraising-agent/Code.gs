@@ -55,11 +55,13 @@ function appendReport_(content) {
   const body = doc.getBody();
 
   if (body.getText().trim()) {
-    body.appendPageBreak();
+    body.insertPageBreak(0);
   }
 
   const lines = content.split(/\r?\n/);
-  lines.forEach((line) => appendLine_(body, line));
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    insertLineAtTop_(body, lines[index]);
+  }
 
   const appendedAt = new Date().toISOString();
   doc.saveAndClose();
@@ -101,8 +103,44 @@ function appendLine_(body, rawLine) {
   appendRichParagraph_(body, line);
 }
 
+function insertLineAtTop_(body, rawLine) {
+  const line = String(rawLine || '').trimEnd();
+
+  if (!line.trim()) {
+    body.insertParagraph(0, '');
+    return;
+  }
+
+  if (/^[-*]\s+/.test(line)) {
+    const item = body.insertListItem(0, line.replace(/^[-*]\s+/, ''));
+    item.setGlyphType(DocumentApp.GlyphType.BULLET);
+    item.setBold(false);
+    return;
+  }
+
+  const headingMatch = line.match(/^\*\*(.+)\*\*$/);
+  if (headingMatch) {
+    const paragraph = body.insertParagraph(0, headingMatch[1]);
+    paragraph.setBold(true);
+    paragraph.setSpacingBefore(10);
+    paragraph.setSpacingAfter(4);
+    return;
+  }
+
+  insertRichParagraphAtTop_(body, line);
+}
+
 function appendRichParagraph_(body, line) {
   const paragraph = body.appendParagraph(line.replace(/\*\*/g, ''));
+  applyInlineBold_(paragraph, line);
+}
+
+function insertRichParagraphAtTop_(body, line) {
+  const paragraph = body.insertParagraph(0, line.replace(/\*\*/g, ''));
+  applyInlineBold_(paragraph, line);
+}
+
+function applyInlineBold_(paragraph, line) {
   const text = paragraph.editAsText();
   text.setBold(false);
 
