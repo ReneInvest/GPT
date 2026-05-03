@@ -98,7 +98,30 @@ function appendLine_(body, rawLine) {
     return;
   }
 
-  body.appendParagraph(line).setBold(false);
+  appendRichParagraph_(body, line);
+}
+
+function appendRichParagraph_(body, line) {
+  const paragraph = body.appendParagraph(line.replace(/\*\*/g, ''));
+  const text = paragraph.editAsText();
+  text.setBold(false);
+
+  let removedMarkers = 0;
+  const markerRegex = /\*\*/g;
+  const markers = [];
+  let match;
+  while ((match = markerRegex.exec(line)) !== null) {
+    markers.push(match.index - removedMarkers);
+    removedMarkers += 2;
+  }
+
+  for (let index = 0; index + 1 < markers.length; index += 2) {
+    const start = markers[index];
+    const end = markers[index + 1] - 1;
+    if (start <= end) {
+      text.setBold(start, end, true);
+    }
+  }
 }
 
 function parsePayload_(e) {
