@@ -1,0 +1,40 @@
+name: FUNDRAISING_AGENT
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 10 * * 0'
+    - cron: '0 11 * * 0'
+
+concurrency:
+  group: fundraising-agent
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check scripts
+        working-directory: fundraising-agent
+        run: npm run check
+
+      - name: Run fundraising agent
+        working-directory: fundraising-agent
+        env:
+          BYPASS_SCHEDULE_GUARD: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+          GOOGLE_APPS_SCRIPT_WEB_APP_URL: ${{ secrets.GOOGLE_APPS_SCRIPT_WEB_APP_URL }}
+          FUNDRAISING_AGENT_TOKEN: ${{ secrets.FUNDRAISING_AGENT_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5' }}
+          OPENAI_REASONING_EFFORT: ${{ vars.OPENAI_REASONING_EFFORT || 'medium' }}
+        run: npm run fundraising:run
