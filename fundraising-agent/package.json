@@ -1,0 +1,15 @@
+{
+  "name": "fundraising-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check scripts/lib/config.mjs && node --check scripts/get-fundraising-history.mjs && node --check scripts/append-fundraising-report.mjs && node --check scripts/run-github-action.mjs",
+    "fundraising:history": "node scripts/get-fundraising-history.mjs",
+    "fundraising:append": "node scripts/append-fundraising-report.mjs",
+    "fundraising:run": "node scripts/run-github-action.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
