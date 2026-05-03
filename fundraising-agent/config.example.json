@@ -1,0 +1,4 @@
+{
+  "googleAppsScriptWebAppUrl": "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
+  "fundraisingAgentToken": "replace-with-a-long-random-token"
+}
