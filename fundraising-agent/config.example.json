@@ -1,4 +1,7 @@
 {
   "googleAppsScriptWebAppUrl": "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
-  "fundraisingAgentToken": "replace-with-a-long-random-token"
+  "fundraisingAgentToken": "replace-with-a-long-random-token",
+  "openaiApiKey": "sk-...",
+  "openaiModel": "gpt-5",
+  "openaiReasoningEffort": "medium"
 }
