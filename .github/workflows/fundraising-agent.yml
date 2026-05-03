@@ -2,9 +2,6 @@ name: FUNDRAISING_AGENT
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 10 * * 0'
-    - cron: '0 11 * * 0'
 
 concurrency:
   group: fundraising-agent
